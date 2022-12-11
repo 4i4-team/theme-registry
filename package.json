@@ -2,22 +2,43 @@
   "name": "@4i4/theme-registry",
   "version": "1.0.0",
   "description": "Theme registry for React",
+  "author": {
+    "name": "Petyo Stoyanov",
+    "email": "petyosv@gmail.com"
+  },
+  "repository": "https://gitlab.com/4i4/theme-registry",
+  "bugs": "https://gitlab.com/4i4/theme-registry/-/issues",
+  "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "/dist"
   ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
+    "build": "rollup -c",
     "start": "rollup -c -w",
-    "build": "rollup -c"
+    "lint": "eslint --fix --ext .tsx ./src/**",
+    "format": "prettier --write './**/*.tsx' --config ./.prettierrc"
   },
   "devDependencies": {
     "@4i4/registry": "^1.0.0",
     "@rollup/plugin-typescript": "^9.0.2",
     "@types/react": "^18.0.22",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rollup": "^3.2.3",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",

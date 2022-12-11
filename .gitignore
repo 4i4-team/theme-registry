@@ -1,0 +1,17 @@
+# dependencies
+node_modules
+
+# builds
+dist
+example
+
+# misc
+.DS_Store
+
+# IDE settings
+.idea
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

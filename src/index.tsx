@@ -2,6 +2,8 @@ import React, {
   ComponentType,
   createContext,
   FC,
+  forwardRef,
+  ForwardRefExoticComponent,
   PropsWithChildren,
   useContext
 } from "react";
@@ -62,3 +64,19 @@ export const Template: FC<PropsWithChildren<TemplateType>> = ({
     </ThemeContext.Consumer>
   );
 };
+
+export const TemplateWithRef = forwardRef<unknown, TemplateType>(
+  ({ template, context, fallback, ...props }, ref) => {
+    return (
+      <ThemeContext.Consumer>
+        {registry => {
+          const Component = registry?.get(template, fallback, context);
+          if (Component) {
+            return <Component {...props} ref={ref} />;
+          }
+          return <></>;
+        }}
+      </ThemeContext.Consumer>
+    );
+  }
+);

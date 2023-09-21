@@ -9,16 +9,16 @@
   "repository": "https://gitlab.com/4i4/theme-registry",
   "bugs": "https://gitlab.com/4i4/theme-registry/-/issues",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "files": [
     "/dist"
   ],
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.esm.js",
       "types": "./dist/index.d.ts"
     }
   },

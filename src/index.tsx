@@ -43,11 +43,13 @@ export function withHOC<P extends object>(
   search: string | string[],
   scope?: string
 ) {
+  const displayName = Component.displayName || Component.name || "Component";
   const WithWrapper = (props: P) => {
     const Wrapper = useTemplate(search, null, scope);
     if (!Wrapper) return <Component {...props} />;
     return <Wrapper {...props} Component={Component} />;
   };
+  WithWrapper.displayName = `withHOC(${displayName})`;
   return WithWrapper;
 }
 

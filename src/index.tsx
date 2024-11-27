@@ -3,7 +3,6 @@ import React, {
   createContext,
   FC,
   forwardRef,
-  ForwardRefExoticComponent,
   PropsWithChildren,
   useContext
 } from "react";
@@ -38,6 +37,19 @@ export const useTemplate = (
     );
   return registry?.get(search, fallback, scope);
 };
+
+export function withHOC<P extends object>(
+  Component: React.ComponentType<P>,
+  search: string | string[],
+  scope?: string
+) {
+  const WithWrapper = (props: P) => {
+    const Wrapper = useTemplate(search, null, scope);
+    if (!Wrapper) return <Component {...props} />;
+    return <Wrapper {...props} Component={Component} />;
+  };
+  return WithWrapper;
+}
 
 export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   registry,

@@ -47,7 +47,7 @@ const registry = new Registry();
 </ThemeProvider>
 ```
 
-## "Template" Component
+## "Template" Component:
 One way to consume directly the registry is by using the `<Template />` component.
 
 **Specific props**
@@ -139,7 +139,7 @@ const Page = () => {
 export default Page;
 ```
 
-## "useTemplate"
+## "useTemplate":
 The other way to consume directly the registry is by using the `useTemplate` hook.
 
 **Params**
@@ -192,6 +192,75 @@ const Page = () => {
 };
 
 export default Page;
+```
+
+## "withHOC":
+```withHOC``` is a Higher-Order Component that wraps your component dynamically with a template and scope.
+
+**Params**
+
+| **Param**   | **Type**          | **Optional** | **Description**                                    |
+|-------------|-------------------|--------------|----------------------------------------------------|
+| `Component` | `ComponentType`   | No           | The React component to wrap.                       |
+| `search`    | `string`, `array` | No           | The template suggestions / search.                 |
+| `scope`     | `string`          | Yes          | The scope in which this key will be retrieve from. |
+
+**Example**
+```javascript
+/** ---- ./registry.js ---- **/
+import React from "react";
+import Registry from '@4i4/registry';
+
+const registry = new Registry();
+
+registry.set("button", React.lazy(() => import('./templates/button')));
+registry.set("withLogger", React.lazy(() => import('./templates/withLogger')));
+
+export default registry;
+
+/** ---- ./templates/button.js ---- **/
+import { withHOC } from "@4i4/theme-registry";
+
+const Button = ({ children, onClick }) => {
+  return (
+    <button onClick={onClick}>{children}</button>
+  )
+};
+
+export default withHOC(Button, "withLogger");
+
+/** ---- ./templates/withLogger.js ---- **/
+const withLogger = ({ Component, ...props }) => {
+  console.log('Props received:', props);
+  return (
+    <Component {...props} />
+  )
+};
+
+export default withLogger;
+```
+
+### Normal HOC vs withHOC
+
+**Normal HOC**
+```javascript
+const withLogger = (Component) => {
+  const WrappedComponent = (props) => {
+    console.log('Props received:', props);
+    return <Component {...props} />;
+  };
+  return WrappedComponent;
+}
+```
+
+**HOC using withHOC style**
+```javascript
+const withLogger = ({ Component, ...props }) => {
+  console.log('Props received:', props);
+  return (
+    <Component {...props} />
+  )
+};
 ```
 
 ## Basic Example:

@@ -6,8 +6,14 @@
     "name": "Petyo Stoyanov",
     "email": "petyosv@gmail.com"
   },
-  "repository": "https://gitlab.com/4i4/theme-registry",
-  "bugs": "https://gitlab.com/4i4/theme-registry/-/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4i4-team/theme-registry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4i4-team/theme-registry/issues"
+  },
+  "homepage": "https://github.com/4i4-team/theme-registry#readme",
   "license": "MIT",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",

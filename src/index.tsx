@@ -1,23 +1,25 @@
 import React, {
   ComponentType,
   createContext,
-  FC,
   forwardRef,
-  PropsWithChildren,
+  ReactNode,
   useContext
 } from "react";
 import Registry from "@4i4/registry";
 
-type RegistryComponentType = Registry<
-  ComponentType<any> & Promise<ComponentType<any>>
->;
-type ThemeProviderProps = {
-  registry: RegistryComponentType;
+type RegistryComponent =
+  | ComponentType<any>
+  | React.LazyExoticComponent<ComponentType<any>>;
+type RegistryComponentType = Registry<RegistryComponent>;
+type ThemeProviderProps<T extends RegistryComponent = RegistryComponent> = {
+  registry: Registry<T>;
+  children: ReactNode;
 };
 type TemplateType = {
   template: string | string[];
   context?: string;
-  fallback?: ComponentType<any> & Promise<ComponentType<any>>;
+  fallback?: RegistryComponent | null;
+  children?: ReactNode;
   [key: string]: any;
 };
 
@@ -25,17 +27,17 @@ const ThemeContext = createContext<RegistryComponentType | undefined>(
   undefined
 );
 
-export const useTemplate = (
+export const useTemplate = <T extends RegistryComponent = RegistryComponent>(
   search: string | string[],
-  fallback?: (ComponentType<any> & Promise<ComponentType<any>>) | null,
+  fallback?: T | null,
   scope?: string
-) => {
+): T | null => {
   const registry = useContext(ThemeContext);
   if (registry === undefined)
     throw new Error(
       "useTemplate must be inside a ThemeProvider with a registry"
     );
-  return registry?.get(search, fallback, scope);
+  return registry.get(search, fallback, scope) as T | null;
 };
 
 export function withHOC<P extends object>(
@@ -53,19 +55,23 @@ export function withHOC<P extends object>(
   return WithWrapper;
 }
 
-export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
+export function ThemeProvider<T extends RegistryComponent>({
   registry,
-  ...props
-}) => {
-  return <ThemeContext.Provider value={registry} {...props} />;
-};
+  children
+}: ThemeProviderProps<T>) {
+  return (
+    <ThemeContext.Provider value={registry as RegistryComponentType}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
 
-export const Template: FC<PropsWithChildren<TemplateType>> = ({
+export const Template = ({
   template,
   context,
   fallback,
   ...props
-}) => {
+}: TemplateType): React.ReactElement | null => {
   return (
     <ThemeContext.Consumer>
       {registry => {
@@ -73,7 +79,7 @@ export const Template: FC<PropsWithChildren<TemplateType>> = ({
         if (Component) {
           return <Component {...props} />;
         }
-        return <></>;
+        return null;
       }}
     </ThemeContext.Consumer>
   );
@@ -88,7 +94,7 @@ export const TemplateWithRef = forwardRef<unknown, TemplateType>(
           if (Component) {
             return <Component {...props} ref={ref} />;
           }
-          return <></>;
+          return null;
         }}
       </ThemeContext.Consumer>
     );

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.5 - 2025-10-12
 
 - Allow registry entries to be either standard React components or `React.lazy` components via `RegistryComponent`.
 - Make `ThemeProvider` generic over the registry payload and require explicit `children`, eliminating the need for casts in consumers.

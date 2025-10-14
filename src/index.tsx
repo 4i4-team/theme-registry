@@ -23,6 +23,20 @@ type TemplateType = {
   [key: string]: any;
 };
 
+const formatSearchLabel = (search: string | string[]) =>
+  Array.isArray(search) ? search.join(", ") : search;
+
+const createMissingTemplateFallback = (
+  search: string | string[]
+): RegistryComponent => {
+  const formattedSearch = formatSearchLabel(search);
+  const MissingTemplate: ComponentType<any> = () => (
+    <>Missing template: {formattedSearch}</>
+  );
+  MissingTemplate.displayName = `MissingTemplate(${formattedSearch})`;
+  return MissingTemplate;
+};
+
 const ThemeContext = createContext<RegistryComponentType | undefined>(
   undefined
 );
@@ -37,7 +51,11 @@ export const useTemplate = <T extends RegistryComponent = RegistryComponent>(
     throw new Error(
       "useTemplate must be inside a ThemeProvider with a registry"
     );
-  return registry.get(search, fallback, scope) as T | null;
+  const fallbackToUse =
+    fallback === undefined
+      ? (createMissingTemplateFallback(search) as T)
+      : fallback;
+  return registry.get(search, fallbackToUse, scope) as T | null;
 };
 
 export function withHOC<P extends object>(
@@ -75,7 +93,11 @@ export const Template = ({
   return (
     <ThemeContext.Consumer>
       {registry => {
-        const Component = registry?.get(template, fallback, context);
+        const fallbackToUse =
+          fallback === undefined
+            ? createMissingTemplateFallback(template)
+            : fallback;
+        const Component = registry?.get(template, fallbackToUse, context);
         if (Component) {
           return <Component {...props} />;
         }
@@ -90,7 +112,11 @@ export const TemplateWithRef = forwardRef<unknown, TemplateType>(
     return (
       <ThemeContext.Consumer>
         {registry => {
-          const Component = registry?.get(template, fallback, context);
+          const fallbackToUse =
+            fallback === undefined
+              ? createMissingTemplateFallback(template)
+              : fallback;
+          const Component = registry?.get(template, fallbackToUse, context);
           if (Component) {
             return <Component {...props} ref={ref} />;
           }

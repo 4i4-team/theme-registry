@@ -31,7 +31,7 @@ const createMissingTemplateFallback = (
 ): RegistryComponent => {
   const formattedSearch = formatSearchLabel(search);
   const MissingTemplate: ComponentType<any> = () => (
-    <>Missing template: {formattedSearch}</>
+    <span>Missing template: {formattedSearch}</span>
   );
   MissingTemplate.displayName = `MissingTemplate(${formattedSearch})`;
   return MissingTemplate;

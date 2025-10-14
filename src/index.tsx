@@ -1,5 +1,6 @@
 import React, {
   ComponentType,
+  ElementType,
   createContext,
   forwardRef,
   ReactNode,
@@ -65,7 +66,7 @@ export function withHOC<P extends object>(
 ) {
   const displayName = Component.displayName || Component.name || "Component";
   const WithWrapper = (props: P) => {
-    const Wrapper = useTemplate(search, null, scope);
+    const Wrapper = useTemplate(search, null, scope) as ElementType | null;
     if (!Wrapper) return <Component {...props} />;
     return <Wrapper {...props} Component={Component} />;
   };

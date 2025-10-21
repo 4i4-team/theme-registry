@@ -4,7 +4,8 @@ import React, {
   createContext,
   forwardRef,
   ReactNode,
-  useContext
+  useContext,
+  useMemo
 } from "react";
 import Registry from "@4i4/registry";
 
@@ -42,6 +43,8 @@ const ThemeContext = createContext<RegistryComponentType | undefined>(
   undefined
 );
 
+export const SETTINGS_SCOPE = "_settings";
+
 export const useTemplate = <T extends RegistryComponent = RegistryComponent>(
   search: string | string[],
   fallback?: T | null,
@@ -57,6 +60,47 @@ export const useTemplate = <T extends RegistryComponent = RegistryComponent>(
       ? (createMissingTemplateFallback(search) as T)
       : fallback;
   return registry.get(search, fallbackToUse, scope) as T | null;
+};
+
+export const useThemeSettings = <
+  TSettings extends Record<string, unknown>,
+  TKey extends keyof TSettings
+>(
+  setting: TKey,
+  defaultSettings: TSettings
+): TSettings[TKey] => {
+  const registry = useContext(ThemeContext);
+  if (registry === undefined) {
+    throw new Error(
+      "useThemeSettings must be inside a ThemeProvider with a registry"
+    );
+  }
+
+  return useMemo(() => {
+    const overrides = registry.get(
+      setting as string,
+      null,
+      SETTINGS_SCOPE
+    ) as Partial<TSettings[TKey]> | null;
+
+    const baseValue = defaultSettings[setting];
+    if (!overrides) {
+      return baseValue;
+    }
+
+    if (
+      typeof baseValue === "object" &&
+      baseValue !== null &&
+      !Array.isArray(baseValue)
+    ) {
+      return {
+        ...(baseValue as Record<string, unknown>),
+        ...(overrides as Record<string, unknown>),
+      } as TSettings[TKey];
+    }
+
+    return (overrides as TSettings[TKey]) ?? baseValue;
+  }, [defaultSettings, registry, setting]);
 };
 
 export function withHOC<P extends object>(

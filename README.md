@@ -194,6 +194,43 @@ const Page = () => {
 export default Page;
 ```
 
+## "useThemeSettings" and the `_settings` scope
+
+The theme-registry reserves a special scope named `_settings` that can hold arbitrary configuration objects for a theme (palettes, typography, global styles, etc.).
+
+Register each setting under the reserved scope:
+
+```ts
+import Registry from "@4i4/registry";
+import { SETTINGS_SCOPE } from "@4i4/theme-registry";
+
+const registry = new Registry();
+
+registry.set("palette", { primary: "#e02b20" }, SETTINGS_SCOPE);
+registry.set("typography", { headingFont: "Inter" }, SETTINGS_SCOPE);
+```
+
+Then inside your components you can merge overrides with the defaults:
+
+```ts
+import { useThemeSettings } from "@4i4/theme-registry";
+
+type StarterSettings = {
+  palette: Record<string, string>;
+  typography: { headingFont: string };
+};
+
+const defaults: StarterSettings = {
+  palette: { primary: "#e02b20" },
+  typography: { headingFont: "Inter" }
+};
+
+const palette = useThemeSettings<StarterSettings>("palette", defaults);
+const typography = useThemeSettings<StarterSettings>("typography", defaults);
+```
+
+Any theme can override the same setting key inside `_settings` before rendering and the hook will merge the override with the defaults while preserving the overall settings type.
+
 ## "withHOC":
 ```withHOC``` is a Higher-Order Component that wraps your component dynamically with a template and scope.
 

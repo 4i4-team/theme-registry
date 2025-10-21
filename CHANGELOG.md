@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.11 - 2025-10-21
+
+- Make the `defaultSettings` argument of `useThemeSettings` optional so themes can rely solely on registry-provided values when desired.
+
 ## 1.1.10 - 2025-10-21
 
 - Change `useThemeSettings` to accept individual setting keys (e.g. `"palette"`) and merge overrides at that granularity while keeping the overall settings type intact.

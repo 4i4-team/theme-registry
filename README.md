@@ -227,6 +227,9 @@ const defaults: StarterSettings = {
 
 const palette = useThemeSettings<StarterSettings>("palette", defaults);
 const typography = useThemeSettings<StarterSettings>("typography", defaults);
+
+// When no defaults are needed you can omit the second argument entirely:
+const layout = useThemeSettings<StarterSettings>("layout");
 ```
 
 Any theme can override the same setting key inside `_settings` before rendering and the hook will merge the override with the defaults while preserving the overall settings type.

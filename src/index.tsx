@@ -67,8 +67,8 @@ export const useThemeSettings = <
   TKey extends keyof TSettings
 >(
   setting: TKey,
-  defaultSettings: TSettings
-): TSettings[TKey] => {
+  defaultSettings?: TSettings
+): TSettings[TKey] | undefined => {
   const registry = useContext(ThemeContext);
   if (registry === undefined) {
     throw new Error(
@@ -83,10 +83,8 @@ export const useThemeSettings = <
       SETTINGS_SCOPE
     ) as Partial<TSettings[TKey]> | null;
 
-    const baseValue = defaultSettings[setting];
-    if (!overrides) {
-      return baseValue;
-    }
+    const baseValue = defaultSettings?.[setting];
+    if (!overrides) return baseValue;
 
     if (
       typeof baseValue === "object" &&

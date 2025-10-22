@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.12 - 2025-10-22
+
+- Relax the `useThemeSettings` generic constraint so any object-shaped settings type is accepted.
+
 ## 1.1.11 - 2025-10-21
 
 - Make the `defaultSettings` argument of `useThemeSettings` optional so themes can rely solely on registry-provided values when desired.

@@ -63,7 +63,7 @@ export const useTemplate = <T extends RegistryComponent = RegistryComponent>(
 };
 
 export const useThemeSettings = <
-  TSettings extends Record<string, unknown>,
+  TSettings extends object,
   TKey extends keyof TSettings
 >(
   setting: TKey,
@@ -81,7 +81,7 @@ export const useThemeSettings = <
       setting as string,
       null,
       SETTINGS_SCOPE
-    ) as Partial<TSettings[TKey]> | null;
+    ) as TSettings[TKey] | null;
 
     const baseValue = defaultSettings?.[setting];
     if (!overrides) return baseValue;
